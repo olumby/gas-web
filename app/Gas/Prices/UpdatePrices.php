@@ -31,21 +31,15 @@ class UpdatePrices {
 		foreach ($this->names as $name)
 		{
 			$filename = $name . '.zip';
-			$storeFile = $this->storagePath . $filename;
+			$storeFilename = $this->storagePath . $filename;
 
-			$url = $this->baseUrl . $this->namePrefix . $filename;
-			$file = file_get_contents($url);
+			$remoteUrl = $this->baseUrl . $this->namePrefix . $filename;
+			$zipFile = file_get_contents($remoteUrl);
 
-			$this->filesystem->put($storeFile, $file);
+			$this->filesystem->put($storeFilename, $zipFile);
 
-			$zipper = new \ZipArchive();
-			$zipper->open($storeFile);
-
-			$zipper->extractTo($this->storagePath);
-
-			$zipper->close();
-
-			$this->filesystem->delete($storeFile);
+			$this->extractZip($storeFilename);
+			$this->convertCsvToJson($name);
 		}
 
 
@@ -64,6 +58,43 @@ class UpdatePrices {
 		}
 
 		return true;
+	}
+
+	/**
+	 * Extract downloaded zip file.
+	 *
+	 * @param $storeFilename
+	 */
+	protected function extractZip($storeFilename)
+	{
+		$zipper = new \ZipArchive();
+		$zipper->open($storeFilename);
+		$zipper->extractTo($this->storagePath);
+		$zipper->close();
+
+		$this->filesystem->delete($storeFilename);
+	}
+
+	/**
+	 * Convert extracted csv file to json.
+	 *
+	 * @param $name
+	 */
+	protected function convertCsvToJson($name)
+	{
+		$csvFilename = $this->storagePath . $this->namePrefix . $name . ".csv";
+		$csvFile = file_get_contents($csvFilename);
+
+		$csvLines = array_map('str_getcsv', file($csvFilename));
+		array_shift($csvLines);
+		array_shift($csvLines);
+
+		$jsonArray = json_encode($csvLines);
+
+		$jsonFilename = $this->storagePath . $name . ".json";
+		$this->filesystem->put($jsonFilename, $jsonArray);
+
+		$this->filesystem->delete($csvFilename);
 	}
 
 } 
