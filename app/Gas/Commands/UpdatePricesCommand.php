@@ -26,6 +26,7 @@ class UpdatePricesCommand extends Command {
 	/**
 	 * Create a new command instance.
 	 *
+	 * @param UpdatePrices $updater
 	 * @return \Gas\Commands\UpdatePricesCommand
 	 */
 	public function __construct(UpdatePrices $updater)
@@ -57,8 +58,7 @@ class UpdatePricesCommand extends Command {
 	 */
 	protected function getArguments()
 	{
-		return array(
-			//array('example', InputArgument::REQUIRED, 'An example argument.'),
+		return array(//array('example', InputArgument::REQUIRED, 'An example argument.'),
 		);
 	}
 
@@ -69,8 +69,7 @@ class UpdatePricesCommand extends Command {
 	 */
 	protected function getOptions()
 	{
-		return array(
-			//array('example', null, InputOption::VALUE_OPTIONAL, 'An example option.', null),
+		return array(//array('example', null, InputOption::VALUE_OPTIONAL, 'An example option.', null),
 		);
 	}
 

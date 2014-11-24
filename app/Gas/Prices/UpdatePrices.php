@@ -4,16 +4,44 @@ use Illuminate\Filesystem\Filesystem;
 
 class UpdatePrices {
 
+	/**
+	 * Base url where fuel prices are located.
+	 *
+	 * @var string
+	 */
 	protected $baseUrl = 'http://www6.mityc.es/aplicaciones/carburantes/';
 
+	/**
+	 * Name prefix for fuel price files.
+	 *
+	 * @var string
+	 */
 	protected $namePrefix = 'eess_';
 
+	/**
+	 * Different types of fuel prices.
+	 *
+	 * @var array
+	 */
 	protected $names = ['GPR', 'G98', 'GOA', 'NGO', 'GOB', 'GOC', 'BIO', 'G95', 'BIE', 'GLP', 'GNC'];
 
+	/**
+	 * Storage location for app files.
+	 *
+	 * @var string
+	 */
 	protected $storagePath;
 
+	/**
+	 * Filesystem instance.
+	 *
+	 * @var Filesystem
+	 */
 	protected $filesystem;
 
+	/**
+	 * @param Filesystem $filesystem
+	 */
 	function __construct(Filesystem $filesystem)
 	{
 		$this->filesystem = $filesystem;
@@ -21,6 +49,9 @@ class UpdatePrices {
 	}
 
 
+	/**
+	 * Fetch the latest fuel prices and replace old ones.
+	 */
 	function updatePriceList()
 	{
 		if (!$this->priceDirectoryExists())
@@ -45,11 +76,19 @@ class UpdatePrices {
 
 	}
 
+	/**
+	 * Creates the storage directory for the prices.
+	 */
 	protected function makePriceDirectory()
 	{
 		$this->filesystem->makeDirectory($this->storagePath);
 	}
 
+	/**
+	 * Checks to see if the fuel price directory exists.
+	 *
+	 * @return bool
+	 */
 	protected function priceDirectoryExists()
 	{
 		if (!$this->filesystem->exists($this->storagePath) || !$this->filesystem->isDirectory($this->storagePath))
