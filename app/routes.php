@@ -2,7 +2,9 @@
 
 Route::get('/', function() use($app)
 {
-	return $app->make('prices')->get('GPR');
+
+	$prices = $app->make('prices')->get('BIO');
+	return json_decode($prices);
 	//$prices = new \Gas\Prices\Prices();
 	//return $prices->get('GPR');
 });
