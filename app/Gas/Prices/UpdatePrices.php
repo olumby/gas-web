@@ -138,14 +138,63 @@ class UpdatePrices {
 
 		$csvLines = array_map('str_getcsv', file($csvFilename));
 		array_shift($csvLines);
-		array_shift($csvLines);
 
-		$jsonArray = json_encode($csvLines);
+		$csvParsed = [];
+
+		foreach ($csvLines as $line)
+		{
+			if (!isset($line[0]) || !isset($line[1]) || !isset($line[2]))
+				continue;
+
+			$lat = $line[0];
+			$long = $line[1];
+			$details = $line[2];
+
+			$extractedDetails = $this->extractNameDetails($details);
+
+			$price = $extractedDetails['price'];
+			$name = $extractedDetails['name'];
+			$hours = $extractedDetails['hours'];
+
+			$csvParsed[] = [
+				'lat'   => $lat,
+				'long'  => $long,
+				'name'  => $name,
+				'hours' => $hours,
+				'price' => $price
+			];
+		}
+
+		$jsonArray = json_encode($csvParsed);
 
 		$jsonFilename = $this->storagePath . $name . ".json";
 		$this->filesystem->put($jsonFilename, $jsonArray);
 
 		$this->filesystem->delete($csvFilename);
+	}
+
+	/**
+	 * @param $name
+	 * @return mixed
+	 */
+	protected function extractNameDetails($name)
+	{
+		if (strpos($name, 'Horario Especial') !== false)
+		{
+			// REPSOL Horario Especial 0,928 e
+			// Name   Hours            Price
+			// ^([A-z ]*).(?:Horario Especial).([0-9,]*)
+
+		}
+
+		// PETROMIRALLES L-D: 24H 0,999 e
+		// Name          Hours    Price
+		// GALP L-D: 24H 0,929 e
+		// Name Hours    Price
+
+		$name = $name;
+
+		return $name;
 	}
 
 } 
