@@ -1,6 +1,7 @@
 <?php namespace Gas\Prices;
 
 use Illuminate\Filesystem\Filesystem;
+use Illuminate\Config\Repository as Config;
 
 class UpdatePrices {
 
@@ -9,21 +10,21 @@ class UpdatePrices {
 	 *
 	 * @var string
 	 */
-	protected $baseUrl = 'http://www6.mityc.es/aplicaciones/carburantes/';
+	protected $baseUrl;
 
 	/**
 	 * Name prefix for fuel price files.
 	 *
 	 * @var string
 	 */
-	protected $namePrefix = 'eess_';
+	protected $namePrefix;
 
 	/**
 	 * Different types of fuel prices.
 	 *
 	 * @var array
 	 */
-	protected $names = ['GPR', 'G98', 'GOA', 'NGO', 'GOB', 'GOC', 'BIO', 'G95', 'BIE', 'GLP', 'GNC'];
+	protected $names;
 
 	/**
 	 * Storage location for app files.
@@ -40,12 +41,25 @@ class UpdatePrices {
 	protected $filesystem;
 
 	/**
+	 * Config instance.
+	 *
+	 * @var Config
+	 */
+	protected $config;
+
+	/**
+	 * @param Config     $config
 	 * @param Filesystem $filesystem
 	 */
-	function __construct(Filesystem $filesystem)
+	function __construct(Config $config, Filesystem $filesystem)
 	{
 		$this->filesystem = $filesystem;
-		$this->storagePath = storage_path('fuel_prices/');
+		$this->config = $config;
+
+		$this->names = $config->get('fuel.names');
+		$this->namePrefix = $config->get('fuel.name_prefix');
+		$this->baseUrl = $config->get('fuel.base_url');
+		$this->storagePath = $config->get('fuel.storage_path');
 	}
 
 
@@ -72,8 +86,6 @@ class UpdatePrices {
 			$this->extractZip($storeFilename);
 			$this->convertCsvToJson($name);
 		}
-
-
 	}
 
 	/**
