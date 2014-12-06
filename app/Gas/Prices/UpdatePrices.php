@@ -152,6 +152,8 @@ class UpdatePrices {
 
 			$extractedDetails = $this->extractNameDetails($details);
 
+			dd($extractedDetails);
+
 			$price = $extractedDetails['price'];
 			$name = $extractedDetails['name'];
 			$hours = $extractedDetails['hours'];
@@ -174,27 +176,48 @@ class UpdatePrices {
 	}
 
 	/**
-	 * @param $name
+	 * @param $details
 	 * @return mixed
 	 */
-	protected function extractNameDetails($name)
+	protected function extractNameDetails($details)
 	{
-		if (strpos($name, 'Horario Especial') !== false)
-		{
-			// REPSOL Horario Especial 0,928 e
-			// Name   Hours            Price
-			// ^([A-z ]*).(?:Horario Especial).([0-9,]*)
+		$response = [
+			'price' => 'price',
+			'name'  => $details,
+			'hours' => 'hours'
+		];
+
+		if (strpos($details, 'Horario Especial') !== false) {
+			/*
+			 * REPSOL Horario Especial 0,928 e
+			 * Name   Hours            Price
+			 * (.*) Horario Especial (\d,\d*) e
+			 */
+
+			preg_match('/(.*) Horario Especial (\d,\d*) e/', $details, $matches);
+
+			$response['hours'] = "Horario Especial";
+			$response['name'] = $matches[1];
+			$response['price'] = $matches[2];
+
+			return $response;
 
 		}
 
-		// PETROMIRALLES L-D: 24H 0,999 e
-		// Name          Hours    Price
-		// GALP L-D: 24H 0,929 e
-		// Name Hours    Price
+		/*
+		 * PETROMIRALLES L-D: 24H 0,999 e
+		 * Name          Hours    Price
+		 * GALP L-D: 24H 0,929 e
+		 * Name Hours    Price
+		 */
 
-		$name = $name;
+		preg_match('/(.*) (.*: .*) (\d,\d*) e/', $details, $matches);
 
-		return $name;
+		$response['name'] = $matches[1];
+		$response['hours'] = $matches[2];
+		$response['price'] = $matches[3];
+
+		return $response;
 	}
 
 } 
