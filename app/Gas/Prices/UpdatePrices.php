@@ -178,7 +178,7 @@ class UpdatePrices {
 		 * Name Hours    Price
 		 */
 
-		preg_match('/(.*) (.*: .*) (\d,\d*) e/', $details, $matches);
+		preg_match('/(.[^:]*) (.*: .*) (\d,\d*) e/', $details, $matches);
 
 		$response['name'] = $matches[1];
 		$response['hours'] = $matches[2];
