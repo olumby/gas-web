@@ -139,36 +139,60 @@ class UpdatePrices {
 		$csvLines = array_map('str_getcsv', file($csvFilename));
 		array_shift($csvLines);
 
-		$csvParsed = [];
+		$forJson = [];
+		$forGeoJson = [
+			'type'     => 'FeatureCollection',
+			'features' => []
+		];
 
 		foreach ($csvLines as $line)
 		{
 			if (!isset($line[0]) || !isset($line[1]) || !isset($line[2]))
 				continue;
 
-			$stLong = $line[1];
-			$stLat = $line[0];
-			$stDetails = $line[2];
+			$stLong = trim($line[1]);
+			$stLat = trim($line[0]);
+			$stDetails = trim($line[2]);
 
 			$extractedDetails = $this->extractNameDetails($stDetails);
 
-			$stPrice = $extractedDetails['price'];
+			$stPrice = str_replace(',', '.', $extractedDetails['price']);
 			$stName = $extractedDetails['name'];
 			$stHours = $extractedDetails['hours'];
 
-			$csvParsed[] = [
-				'long'  => $stLong,
-				'lat'   => $stLat,
+			$forJson[] = [
+				'lat'   => (float)$stLat,
+				'long'  => (float)$stLong,
 				'name'  => $stName,
 				'hours' => $stHours,
-				'price' => $stPrice
+				'price' => (float)$stPrice
+			];
+
+			$forGeoJson['features'][] = [
+				'geometry' => [
+					'type' => 'Point',
+					'coordinates' => [
+						(float)$stLat,
+						(float)$stLong
+					]
+				],
+				'type' => 'Feature',
+				'properties' => [
+					'name' => $stName,
+					'hours' => $stHours,
+					'price' => (float)$stPrice
+				]
 			];
 		}
 
-		$jsonArray = json_encode($csvParsed);
+		$jsonArray = json_encode($forJson);
+		$geoJsonArray = json_encode($forGeoJson);
 
 		$jsonFilename = $this->storagePath . $name . ".json";
 		$this->filesystem->put($jsonFilename, $jsonArray);
+
+		$geoJsonFilename = $this->storagePath . $name . ".geojson";
+		$this->filesystem->put($geoJsonFilename, $geoJsonArray);
 
 		$this->filesystem->delete($csvFilename);
 	}
@@ -179,13 +203,10 @@ class UpdatePrices {
 	 */
 	protected function extractNameDetails($details)
 	{
-		$response = [
-			'price' => 'price',
-			'name'  => $details,
-			'hours' => 'hours'
-		];
+		$response = [];
 
-		if (strpos($details, 'Horario Especial') !== false) {
+		if (strpos($details, 'Horario Especial') !== false)
+		{
 			/*
 			 * REPSOL Horario Especial 0,928 e
 			 * Name   Hours            Price
