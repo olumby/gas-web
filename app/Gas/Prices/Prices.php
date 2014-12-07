@@ -38,8 +38,17 @@ class Prices {
 		$this->names = $config->get('fuel.names');
 	}
 
+	function getJson($name)
+	{
+		return $this->get($name, 'json');
+	}
 
-	function get($name)
+	function getGeoJson($name)
+	{
+		return $this->get($name, 'geojson');
+	}
+
+	protected function get($name, $fileType)
 	{
 		if (!in_array($name, $this->names))
 		{
@@ -47,7 +56,7 @@ class Prices {
 		}
 
 		$storagePath = $this->config->get('fuel.storage_path');
-		$filePath = $storagePath . $name . ".json";
+		$filePath = $storagePath . $name . "." . $fileType;
 
 		if(!$this->filesystem->exists($filePath))
 		{

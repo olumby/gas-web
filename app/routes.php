@@ -2,9 +2,6 @@
 
 Route::get('/', function() use($app)
 {
-
-	$prices = $app->make('prices')->get('GPR');
-	return json_decode($prices);
-	//$prices = new \Gas\Prices\Prices();
-	//return $prices->get('GPR');
+	$prices = $app->make('prices')->getJson('G95');
+	return $prices;
 });
