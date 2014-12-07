@@ -4,6 +4,11 @@ use Illuminate\Support\Facades\DB;
 
 class Price extends \Eloquent {
 
+	/**
+	 * Entity uses eloquent timestamps.
+	 *
+	 * @var bool
+	 */
 	public $timestamps = true;
 
 	/**
@@ -20,13 +25,27 @@ class Price extends \Eloquent {
 	 */
 	protected $hidden = array();
 
-
+	/**
+	 * Returns prices based on the fuel type.
+	 *
+	 * @param $query
+	 * @param $type
+	 * @return mixed
+	 */
 	public function scopeOfType($query, $type)
 	{
 		return $query->whereType($type);
 	}
 
-
+	/**
+	 * Returns prices based on coordinates.
+	 *
+	 * @param $query
+	 * @param $type
+	 * @param $lat
+	 * @param $lng
+	 * @return mixed
+	 */
 	public function scopeCloseTo($query, $type, $lat, $lng)
 	{
 		if (!is_numeric($lat) || !is_numeric($lng))

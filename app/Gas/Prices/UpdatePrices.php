@@ -102,6 +102,10 @@ class UpdatePrices {
 		$this->filesystem->delete($storeFilename);
 	}
 
+	/**
+	 * @param $name
+	 * @return array
+	 */
 	protected function convertCsvToArray($name)
 	{
 		$csvFilename = $this->storagePath . $this->namePrefix . $name . ".csv";
@@ -143,6 +147,11 @@ class UpdatePrices {
 		return $result;
 	}
 
+	/**
+	 * Stores the updated information in the DB.
+	 *
+	 * @param $information
+	 */
 	protected function storeUpdatedInformation($information)
 	{
 		foreach (array_chunk($information, 1000) as $batch)
@@ -152,8 +161,10 @@ class UpdatePrices {
 	}
 
 	/**
+	 * Extracts the price, hours and name from station details.
+	 *
 	 * @param $details
-	 * @return mixed
+	 * @return array
 	 */
 	protected function extractNameDetails($details)
 	{
@@ -174,7 +185,6 @@ class UpdatePrices {
 			$response['price'] = $matches[2];
 
 			return $response;
-
 		}
 
 		/*
