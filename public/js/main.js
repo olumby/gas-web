@@ -25,4 +25,4 @@ var featureLayer = L.mapbox.featureLayer('examples.map-h61e8o8e').on('ready', fu
 	map.addLayer(markers);
 
 })
-	.loadURL('http://gas.dev/api/prices/json/GPR');
+	.loadURL('http://gas.dev/api/prices/geojson/GPR');
