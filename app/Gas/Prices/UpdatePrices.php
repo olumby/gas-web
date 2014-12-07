@@ -146,24 +146,22 @@ class UpdatePrices {
 			if (!isset($line[0]) || !isset($line[1]) || !isset($line[2]))
 				continue;
 
-			$lat = $line[0];
-			$long = $line[1];
-			$details = $line[2];
+			$stLong = $line[1];
+			$stLat = $line[0];
+			$stDetails = $line[2];
 
-			$extractedDetails = $this->extractNameDetails($details);
+			$extractedDetails = $this->extractNameDetails($stDetails);
 
-			dd($extractedDetails);
-
-			$price = $extractedDetails['price'];
-			$name = $extractedDetails['name'];
-			$hours = $extractedDetails['hours'];
+			$stPrice = $extractedDetails['price'];
+			$stName = $extractedDetails['name'];
+			$stHours = $extractedDetails['hours'];
 
 			$csvParsed[] = [
-				'lat'   => $lat,
-				'long'  => $long,
-				'name'  => $name,
-				'hours' => $hours,
-				'price' => $price
+				'long'  => $stLong,
+				'lat'   => $stLat,
+				'name'  => $stName,
+				'hours' => $stHours,
+				'price' => $stPrice
 			];
 		}
 
