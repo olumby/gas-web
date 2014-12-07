@@ -38,16 +38,38 @@ class Prices {
 		$this->names = $config->get('fuel.names');
 	}
 
+	/**
+	 * Get prices for name in JSON format.
+	 *
+	 * @param $name
+	 * @return string
+	 */
 	function getJson($name)
 	{
 		return $this->get($name, 'json');
 	}
 
+	/**
+	 * Get prices for name in GEOJSON format.
+	 *
+	 * @param $name
+	 * @return string
+	 */
 	function getGeoJson($name)
 	{
 		return $this->get($name, 'geojson');
 	}
 
+	/**
+	 * Get prices for name and file type.
+	 *
+	 * @param $name
+	 * @param $fileType
+	 * @throws NameNotFoundException
+	 * @throws PriceFileNotFoundException
+	 * @throws \Illuminate\Filesystem\FileNotFoundException
+	 * @return string
+	 */
 	protected function get($name, $fileType)
 	{
 		if (!in_array($name, $this->names))
@@ -67,6 +89,9 @@ class Prices {
 
 	}
 
+	/**
+	 * @return mixed
+	 */
 	function fuelNames()
 	{
 		return $this->names;
