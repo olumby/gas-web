@@ -27,25 +27,26 @@ class UpdatePrices {
 	protected $names;
 
 	/**
+	 * Config instance.
+	 *
+	 * @var Config
+	 */
+	protected $config;
+
+	/**
 	 * Storage location for app files.
 	 *
 	 * @var string
 	 */
 	protected $storagePath;
 
+
 	/**
-	 * Filesystem instance.
+	 * Filesystem Instance
 	 *
 	 * @var Filesystem
 	 */
 	protected $filesystem;
-
-	/**
-	 * Config instance.
-	 *
-	 * @var Config
-	 */
-	protected $config;
 
 	/**
 	 * @param Config     $config
@@ -54,7 +55,6 @@ class UpdatePrices {
 	function __construct(Config $config, Filesystem $filesystem)
 	{
 		$this->filesystem = $filesystem;
-		$this->config = $config;
 
 		$this->names = $config->get('fuel.names');
 		$this->namePrefix = $config->get('fuel.name_prefix');
@@ -68,10 +68,7 @@ class UpdatePrices {
 	 */
 	function updatePriceList()
 	{
-		if (!$this->priceDirectoryExists())
-		{
-			$this->makePriceDirectory();
-		}
+		Price::truncate();
 
 		foreach ($this->names as $name)
 		{
@@ -82,33 +79,12 @@ class UpdatePrices {
 			$zipFile = file_get_contents($remoteUrl);
 
 			$this->filesystem->put($storeFilename, $zipFile);
-
 			$this->extractZip($storeFilename);
-			$this->convertCsvToJson($name);
+
+			$convertedFile = $this->convertCsvToArray($name);
+
+			$this->storeUpdatedInformation($convertedFile);
 		}
-	}
-
-	/**
-	 * Creates the storage directory for the prices.
-	 */
-	protected function makePriceDirectory()
-	{
-		$this->filesystem->makeDirectory($this->storagePath);
-	}
-
-	/**
-	 * Checks to see if the fuel price directory exists.
-	 *
-	 * @return bool
-	 */
-	protected function priceDirectoryExists()
-	{
-		if (!$this->filesystem->exists($this->storagePath) || !$this->filesystem->isDirectory($this->storagePath))
-		{
-			return false;
-		}
-
-		return true;
 	}
 
 	/**
@@ -126,12 +102,7 @@ class UpdatePrices {
 		$this->filesystem->delete($storeFilename);
 	}
 
-	/**
-	 * Convert extracted csv file to json.
-	 *
-	 * @param $name
-	 */
-	protected function convertCsvToJson($name)
+	protected function convertCsvToArray($name)
 	{
 		$csvFilename = $this->storagePath . $this->namePrefix . $name . ".csv";
 		$csvFile = file_get_contents($csvFilename);
@@ -139,11 +110,7 @@ class UpdatePrices {
 		$csvLines = array_map('str_getcsv', file($csvFilename));
 		array_shift($csvLines);
 
-		$forJson = [];
-		$forGeoJson = [
-			'type'     => 'FeatureCollection',
-			'features' => []
-		];
+		$result = [];
 
 		foreach ($csvLines as $line)
 		{
@@ -160,41 +127,22 @@ class UpdatePrices {
 			$stName = $extractedDetails['name'];
 			$stHours = $extractedDetails['hours'];
 
-			$forJson[] = [
-				'lat'   => (float)$stLat,
-				'long'  => (float)$stLong,
+			$result[] = [
+				'lat'   => (float) $stLat,
+				'long'  => (float) $stLong,
 				'name'  => $stName,
 				'hours' => $stHours,
-				'price' => (float)$stPrice
-			];
-
-			$forGeoJson['features'][] = [
-				'geometry' => [
-					'type' => 'Point',
-					'coordinates' => [
-						(float)$stLat,
-						(float)$stLong
-					]
-				],
-				'type' => 'Feature',
-				'properties' => [
-					'name' => $stName,
-					'hours' => $stHours,
-					'price' => (float)$stPrice
-				]
+				'price' => (float) $stPrice,
+				'type'  => $name
 			];
 		}
 
-		$jsonArray = json_encode($forJson);
-		$geoJsonArray = json_encode($forGeoJson);
+		return $result;
+	}
 
-		$jsonFilename = $this->storagePath . $name . ".json";
-		$this->filesystem->put($jsonFilename, $jsonArray);
-
-		$geoJsonFilename = $this->storagePath . $name . ".geojson";
-		$this->filesystem->put($geoJsonFilename, $geoJsonArray);
-
-		$this->filesystem->delete($csvFilename);
+	protected function storeUpdatedInformation($information)
+	{
+		Price::insert($information);
 	}
 
 	/**
