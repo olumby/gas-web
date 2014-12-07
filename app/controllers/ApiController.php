@@ -1,20 +1,27 @@
 <?php
 
-use Gas\Prices\Prices;
+use Gas\Prices\Price;
 
 class ApiController extends BaseController {
 
 	protected $prices;
 
-	function __construct(Prices $prices)
+	function __construct(Price $price)
 	{
-		$this->prices = $prices;
+		$this->price = $price;
 	}
 
 
 	public function prices($format, $name)
 	{
-		return $this->prices->getGeoJson($name);
+		// Check cache..
+		return $this->price->ofType($name)->take(10)->get();
+	}
+
+	public function geoPrices($format, $name, $lat, $lng, $prox)
+	{
+		// Check cache..
+		return $this->price->ofType($name)->closeTo($lat, $lng, $prox)->take(10)->get();
 	}
 
 }

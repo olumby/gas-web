@@ -41,12 +41,12 @@ class Price extends \Eloquent {
 	 * Returns prices based on coordinates.
 	 *
 	 * @param $query
-	 * @param $type
 	 * @param $lat
 	 * @param $lng
+	 * @param $prox
 	 * @return mixed
 	 */
-	public function scopeCloseTo($query, $type, $lat, $lng)
+	public function scopeCloseTo($query, $lat, $lng, $prox)
 	{
 		if (!is_numeric($lat) || !is_numeric($lng))
 			dd("error");
@@ -54,8 +54,7 @@ class Price extends \Eloquent {
 		$magic = "( 3959 * acos( cos( radians($lat) ) * cos( radians( lat ) ) * cos( radians( lng ) - radians($lng) ) + sin( radians($lat) ) * sin( radians( lat ) ) ) ) as distance";
 
 		$query->select('*', DB::raw($magic))
-			->whereType($type)
-			->having('distance', '<', 10)
+			->having('distance', '<', $prox)
 			->orderBy('distance', 'asc');
 
 		return $query;
