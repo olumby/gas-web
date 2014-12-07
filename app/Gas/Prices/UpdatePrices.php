@@ -112,6 +112,8 @@ class UpdatePrices {
 
 		$result = [];
 
+		$timestamp = date("Y-m-d H:i:s");
+
 		foreach ($csvLines as $line)
 		{
 			if (!isset($line[0]) || !isset($line[1]) || !isset($line[2]))
@@ -128,12 +130,14 @@ class UpdatePrices {
 			$stHours = $extractedDetails['hours'];
 
 			$result[] = [
-				'lat'   => (float) $stLat,
-				'long'  => (float) $stLong,
-				'name'  => $stName,
-				'hours' => $stHours,
-				'price' => (float) $stPrice,
-				'type'  => $name
+				'lat'        => (float) $stLat,
+				'long'       => (float) $stLong,
+				'name'       => $stName,
+				'hours'      => $stHours,
+				'price'      => (float) $stPrice,
+				'type'       => $name,
+				'created_at' => $timestamp,
+				'updated_at' => $timestamp
 			];
 		}
 
@@ -142,7 +146,10 @@ class UpdatePrices {
 
 	protected function storeUpdatedInformation($information)
 	{
-		Price::insert($information);
+		foreach (array_chunk($information, 1000) as $batch)
+		{
+			Price::insert($batch);
+		}
 	}
 
 	/**
