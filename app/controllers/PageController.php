@@ -1,10 +1,12 @@
 <?php
 
+use Gas\Prices\Price;
+
 class PageController extends BaseController {
 
 	public function index()
 	{
-		return View::make('hello');
+		return Price::closeTo('GPR', 39.467743, -0.359759)->take(10)->get();
 	}
 
 	public function prices()

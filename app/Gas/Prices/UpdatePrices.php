@@ -118,8 +118,8 @@ class UpdatePrices {
 			if (!isset($line[0]) || !isset($line[1]) || !isset($line[2]))
 				continue;
 
-			$stLong = trim($line[1]);
-			$stLat = trim($line[0]);
+			$stLong = trim($line[0]);
+			$stLat = trim($line[1]);
 			$stDetails = trim($line[2]);
 
 			$extractedDetails = $this->extractNameDetails($stDetails);
@@ -130,7 +130,7 @@ class UpdatePrices {
 
 			$result[] = [
 				'lat'        => (float) $stLat,
-				'long'       => (float) $stLong,
+				'lng'       => (float) $stLong,
 				'name'       => $stName,
 				'hours'      => $stHours,
 				'price'      => (float) $stPrice,

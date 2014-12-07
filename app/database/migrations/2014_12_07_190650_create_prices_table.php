@@ -16,7 +16,7 @@ class CreatePricesTable extends Migration {
 		{
 			$table->increments('id');
 			$table->decimal('lat', 11, 8);
-			$table->decimal('long', 11, 8);
+			$table->decimal('lng', 11, 8);
 			$table->decimal('price');
 			$table->string('hours');
 			$table->string('name');
