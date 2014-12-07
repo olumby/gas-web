@@ -105,7 +105,6 @@ class UpdatePrices {
 	protected function convertCsvToArray($name)
 	{
 		$csvFilename = $this->storagePath . $this->namePrefix . $name . ".csv";
-		$csvFile = file_get_contents($csvFilename);
 
 		$csvLines = array_map('str_getcsv', file($csvFilename));
 		array_shift($csvLines);
