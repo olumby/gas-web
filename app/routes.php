@@ -5,7 +5,7 @@ Route::get('/', [
 	'as'   => 'home'
 ]);
 
-Route::get('precios', [
+Route::get('prices', [
 	'uses' => 'PageController@prices',
 	'as'   => 'es.prices'
 ]);

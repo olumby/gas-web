@@ -19,17 +19,55 @@
 
     <section id="grid" class="bg-lightgrey">
         <div class="container">
-
-        <div class="row clearfix">
-            <div class="column-6 padded">
-                <h1>Selection</h1>
+            <div class="row clearfix">
+                <div class="column-9 padded" style="float:right;">
+                    <div id='map' style="min-height:500px;"></div>
+                </div>
+                <div class="column-7 padded">
+                    <div class="row text-center" id="fuelButtons">
+                        <button class="button bg-white black shadow" name="GPR">Gasolina 95</button>
+                        <button class="button bg-white black shadow" name="G95">Gasolina 98</button>
+                        <button class="button bg-white black shadow" name="GOA">Diésel</button>
+                        <button class="button bg-white black shadow" name="NGO">Diésel+</button>
+                    </div>
+                    <form class="row">
+                        <fieldset>
+                            <input type="text" name="searchQuery" placeholder="Location.." style="width:100%;" />
+                        </fieldset>
+                        <fieldset>
+                            <input type="submit" name="search" placeholder="Search" />
+                        </fieldset>
+                    </form>
+                    <table class="row">
+                        <thead>
+                            <th>Name</th>
+                            <th>Price</th>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>BP</td>
+                                <td>0,944</td>
+                                <td>Directions</td>
+                            </tr>
+                            <tr>
+                                <td>Repsol</td>
+                                <td>0,944</td>
+                                <td>Directions</td>
+                            </tr>
+                            <tr>
+                                <td>BP</td>
+                                <td>0,944</td>
+                                <td>Directions</td>
+                            </tr>
+                            <tr>
+                                <td>Repsol</td>
+                                <td>0,944</td>
+                                <td>Directions</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
             </div>
-            <div class="column-10 padded">
-                <div id='map' style="min-height:500px;"></div>
-            </div>
-        </div>
-
-
         </div>
     </section>
 
