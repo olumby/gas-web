@@ -51,7 +51,7 @@ class Price extends \Eloquent {
 		if (!is_numeric($lat) || !is_numeric($lng))
 			dd("error");
 
-		$magic = "( 3959 * acos( cos( radians($lat) ) * cos( radians( lat ) ) * cos( radians( lng ) - radians($lng) ) + sin( radians($lat) ) * sin( radians( lat ) ) ) ) as distance";
+		$magic = "( 6371 * acos( cos( radians($lat) ) * cos( radians( lat ) ) * cos( radians( lng ) - radians($lng) ) + sin( radians($lat) ) * sin( radians( lat ) ) ) ) as distance";
 
 		$query->select('*', DB::raw($magic))
 			->having('distance', '<', $proximity)
