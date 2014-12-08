@@ -30,7 +30,7 @@ class ApiController extends BaseController {
 	 */
 	public function prices($format, $name)
 	{
-		$query = Cache::remember("$format-$name", 20, function () use ($name)
+		$query = Cache::rememberForever("$name", function () use ($name)
 		{
 			return $this->price->ofType($name)->get()->toJson();
 		});
@@ -50,14 +50,14 @@ class ApiController extends BaseController {
 	 * @param $name
 	 * @param $lat
 	 * @param $lng
-	 * @param $prox
+	 * @param $proximity
 	 * @return array
 	 */
-	public function geoPrices($format, $name, $lat, $lng, $prox)
+	public function geoPrices($format, $name, $lat, $lng, $proximity)
 	{
-		$query = Cache::remember("$format-$name-$lat-$lng-$prox", 20, function () use ($name, $lat, $lng, $prox)
+		$query = Cache::rememberForever("$name-$lat-$lng-$proximity", function () use ($name, $lat, $lng, $proximity)
 		{
-			return $this->price->ofType($name)->closeTo($lat, $lng, $prox)->take(10)->get()->toJson();
+			return $this->price->ofType($name)->closeTo($lat, $lng, $proximity)->take(10)->get()->toJson();
 		});
 
 		if ($format == 'geojson')

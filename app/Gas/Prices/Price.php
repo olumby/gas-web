@@ -43,10 +43,10 @@ class Price extends \Eloquent {
 	 * @param $query
 	 * @param $lat
 	 * @param $lng
-	 * @param $prox
+	 * @param $proximity
 	 * @return mixed
 	 */
-	public function scopeCloseTo($query, $lat, $lng, $prox)
+	public function scopeCloseTo($query, $lat, $lng, $proximity)
 	{
 		if (!is_numeric($lat) || !is_numeric($lng))
 			dd("error");
@@ -54,7 +54,7 @@ class Price extends \Eloquent {
 		$magic = "( 3959 * acos( cos( radians($lat) ) * cos( radians( lat ) ) * cos( radians( lng ) - radians($lng) ) + sin( radians($lat) ) * sin( radians( lat ) ) ) ) as distance";
 
 		$query->select('*', DB::raw($magic))
-			->having('distance', '<', $prox)
+			->having('distance', '<', $proximity)
 			->orderBy('distance', 'asc');
 
 		return $query;
