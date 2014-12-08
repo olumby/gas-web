@@ -28,15 +28,15 @@
                         <button data-fuel="GOA" class="button bg-white black shadow deselected" name="GOA">Diésel</button>
                         <button data-fuel="NGO" class="button bg-white black shadow deselected" name="NGO">Diésel+</button>
                     </div>
-                    <form class="row">
+                    <form class="row text-light">
                         <fieldset>
                             <input type="text" name="searchQuery" placeholder="Location.." style="width:100%;" />
                         </fieldset>
                         <fieldset>
-                            <input type="submit" name="search" placeholder="Search" />
+                            <input type="submit" class="button bg-black" name="search" value="Search.." />
                         </fieldset>
                     </form>
-                    <table class="row">
+                    <table id="priceTable" class="row">
                         <thead>
                             <th>Name</th>
                             <th>Price</th>
