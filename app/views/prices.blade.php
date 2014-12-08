@@ -23,10 +23,10 @@
                 </div>
                 <div class="column-7 padded">
                     <div class="row text-center" id="fuelButtons">
-                        <button class="button bg-white black shadow" name="GPR">Gasolina 95</button>
-                        <button class="button bg-white black shadow" name="G95">Gasolina 98</button>
-                        <button class="button bg-white black shadow" name="GOA">Diésel</button>
-                        <button class="button bg-white black shadow" name="NGO">Diésel+</button>
+                        <button data-fuel="GPR" class="button bg-white black shadow selected" name="GPR">Gasolina 95</button>
+                        <button data-fuel="G98" class="button bg-white black shadow deselected" name="G98">Gasolina 98</button>
+                        <button data-fuel="GOA" class="button bg-white black shadow deselected" name="GOA">Diésel</button>
+                        <button data-fuel="NGO" class="button bg-white black shadow deselected" name="NGO">Diésel+</button>
                     </div>
                     <form class="row">
                         <fieldset>

@@ -6,3 +6,13 @@ html, body {
 	margin: 0;
 	padding: 0;
 }
+
+.button {
+	&.deselected {
+		color: @grey;
+	}
+	&.selected {
+		top:1px;
+		box-shadow: 0 1px 0 rgba(0,0,0,.15);
+	}
+}
