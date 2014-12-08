@@ -44,14 +44,19 @@ $(document).ready(function () {
 				.addTo(map)
 				.on('ready', function (layer) {
 					this.eachLayer(function (marker) {
-						var tr = priceTable.children('tbody').append('<tr>');
-						tr.append('<td>' + marker.feature.properties.name + '</td>');
-						tr.append('<td>' + marker.feature.properties.price + '</td>');
 						marker.setIcon(L.mapbox.marker.icon({
 							'marker-color': '#CC0000',
 							'marker-symbol': 'fuel'
 						}));
 						marker.bindPopup("<table><tr><td>Name</td><td>" + marker.feature.properties.name + "</td></tr><tr><td>Price</td><td>&euro;" + marker.feature.properties.price + "</td></tr><tr><td>Hours</td><td>" + marker.feature.properties.hours + "</td></tr></table>")
+						var tr = priceTable.children('tbody').append('<tr>');
+						tr.append('<td>' + marker.feature.properties.name + '</td>');
+						tr.append('<td>' + marker.feature.properties.price + '</td>');
+						tr.click(function() {
+							console.log('click')
+							map.setView(marker.getLatLng(), 14);
+							marker.openPopup();
+						});
 					});
 				});
 		}
