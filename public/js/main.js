@@ -2,7 +2,18 @@ $(document).ready(function () {
 
 	var selectedFuel = 'GPR',
 		coordinates = [40.0, -3.4],
+		zoom = 6,
 		priceTable = $('#priceTable');
+
+	if(getUrlParameter("lat") && getUrlParameter("lng")) {
+		coordinates = [getUrlParameter("lat"),getUrlParameter("lng")]
+	}
+
+	if(getUrlParameter("zoom")) {
+		zoom = getUrlParameter("zoom");
+	}
+
+	console.log(getUrlParameter("lats"));
 
 	L.mapbox.accessToken = 'pk.eyJ1Ijoib2x1bWJ5IiwiYSI6IjFDTWM3V2sifQ.KXc-98r7KCMVsboqLE9nFA';
 
@@ -11,7 +22,7 @@ $(document).ready(function () {
 		attributionControl: false,
 		infoControl: true,
 		center: coordinates,
-		zoom: 6
+		zoom: zoom
 	});
 
 	var featureLayer = L.mapbox.featureLayer()
@@ -20,6 +31,8 @@ $(document).ready(function () {
 	map.on('zoomend moveend', function () {
 		updateMap()
 	});
+
+	updateMap()
 
 	$('#fuelButtons button').on('click', function () {
 		selectedFuel = $(this).data('fuel');
@@ -53,12 +66,26 @@ $(document).ready(function () {
 						tr.append('<td>' + marker.feature.properties.name + '</td>');
 						tr.append('<td>' + marker.feature.properties.price + '</td>');
 						tr.click(function() {
-							console.log('click')
 							map.setView(marker.getLatLng(), 14);
 							marker.openPopup();
 						});
 					});
 				});
+		}
+	}
+
+	function getUrlParameter(sParam)
+	{
+		var sPageURL = window.location.hash.substring(1);
+
+		var sURLVariables = sPageURL.split('#');
+		for (var i = 0; i < sURLVariables.length; i++)
+		{
+			var sParameterName = sURLVariables[i].split('=');
+			if (sParameterName[0] == sParam)
+			{
+				return sParameterName[1];
+			}
 		}
 	}
 
